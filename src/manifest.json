@@ -1,13 +1,29 @@
 {
   "name": "Chrome Extension Webpack",
+  "permissions": [
+    "storage",
+    "activeTab",
+    "<all_urls>",
+    "http://*/*",
+    "https://*/*",
+    "https://*/"
+  ],
+  "web_accessible_resources": [
+    "*.js.map"
+  ],
   "options_page": "options.html",
   "background": {
     "page": "background.html"
   },
   "browser_action": {
-    "default_popup": "popup.html",
     "default_icon": "icon-34.png"
   },
+  "content_scripts": [
+    {
+      "matches": ["http://*/*","https://*/*"],
+      "js": ["main.bundle.js"]
+    }
+  ],
   "icons": {
     "128": "icon-128.png"
   },

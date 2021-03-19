@@ -2,6 +2,7 @@ var webpack = require("webpack"),
     path = require("path"),
     fileSystem = require("fs"),
     env = require("./utils/env"),
+    ExtensionReloader  = require('webpack-extension-reloader'),
     CleanWebpackPlugin = require("clean-webpack-plugin"),
     CopyWebpackPlugin = require("copy-webpack-plugin"),
     HtmlWebpackPlugin = require("html-webpack-plugin"),
@@ -22,7 +23,20 @@ var options = {
   entry: {
     popup: path.join(__dirname, "src", "js", "popup.js"),
     options: path.join(__dirname, "src", "js", "options.js"),
-    background: path.join(__dirname, "src", "js", "background.js")
+    background: path.join(__dirname, "src", "js", "old", "background.js"),
+    main: [
+//        'jquery.js',
+        'settings.js',
+        'setup.js',
+        'inject.js',
+        'jquery-ui.aleksi.min.js',
+        'aleksi_plugin_methods.js',
+        'aleksi.js',
+        'content_listener.js'
+    ].map( filename => { return path.join(__dirname, "src", "js", "old", filename ); } ),
+  },
+  chromeExtensionBoilerplate: {
+    notHotReload: ["background", "main"]
   },
   output: {
     path: path.join(__dirname, "build"),
@@ -56,11 +70,12 @@ var options = {
         loader: "html-loader",
         exclude: /node_modules/
       },
-      {
+    /*  {
         test: /\.js$/,
         loader: 'babel-loader',
         exclude: /node_modules/
       },
+      */
       {
         test: /\.vue$/,
         loader: 'vue-loader'
@@ -72,7 +87,12 @@ var options = {
   },
   plugins: [
     // clean the build folder
-    new CleanWebpackPlugin(["build"]),
+    //new CleanWebpackPlugin(["build"]),
+    new ExtensionReloader(),
+    new webpack.ProvidePlugin({
+        $: 'jquery',
+        jQuery: 'jquery',
+    }),
     // expose and write the allowed env vars on the compiled bundle
     new webpack.DefinePlugin({
       "process.env.NODE_ENV": JSON.stringify(env.NODE_ENV)
@@ -111,7 +131,8 @@ var options = {
 };
 
 if (env.NODE_ENV === "development") {
-  options.devtool = "cheap-module-eval-source-map";
+  //options.devtool = "cheap-module-eval-source-map";
+  options.devtool = "source-map";
 }
 
 module.exports = options;
