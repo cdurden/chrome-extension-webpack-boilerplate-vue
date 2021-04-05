@@ -1,5 +1,11 @@
 {
   "name": "Chrome Extension Webpack",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "aleksi@aleksi.org",
+      "strict_min_version": "42.0"
+    }
+  },
   "permissions": [
     "storage",
     "activeTab",
@@ -7,6 +13,10 @@
     "http://*/*",
     "https://*/*",
     "https://*/"
+  ],
+  "host_permissions": [
+    "http://www.aleksi.org/",
+    "https://www.aleksi.org/"
   ],
   "web_accessible_resources": [
     "*.js.map"
@@ -21,7 +31,7 @@
   "content_scripts": [
     {
       "matches": ["http://*/*","https://*/*"],
-      "js": ["main.bundle.js"]
+      "js": ["content-script.bundle.js"]
     }
   ],
   "icons": {

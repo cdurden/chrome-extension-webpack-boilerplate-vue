@@ -1,6 +1,7 @@
 import { jquery_aleksi, mode } from './setup.js';
 import { get_setting } from './settings.js';
-import { get_pins, analyse } from './aleksi_plugin_methods.js';
+import { get_pins } from './aleksi_plugin_methods.js';
+
 
 var get_session;
 
@@ -726,7 +727,7 @@ function initialize_aleksi() {
               });
   
               //get the current popup position of the dialog box
-              pos = jquery_aleksi(".ui-dialog").position();
+              var pos = jquery_aleksi(".ui-dialog").position();
   
               //adjust the dialog box so that it scrolls as you scroll the page
               jquery_aleksi(".ui-dialog").css({
@@ -1613,5 +1614,30 @@ jquery_aleksi(document).ready(async function() {
     initialize_aleksi();
   }
 });
+
+async function analyse(word, e){
+    var lang = await get_setting('lang');
+    //set interface elements to report initiation of analysis
+    jquery_aleksi("#aleksi_analysis_progress_indicator").show();
+    jquery_aleksi("#aleksi_word_text" ).text(word);
+    jquery_aleksi("#analysis_failed").hide();
+    jquery_aleksi("#analysis_results").hide();
+    jquery_aleksi("#requesting_analysis").show();
+    show_dialog(e);
+    chrome.runtime.sendMessage({
+        action: 'analyse',
+        word: word,
+        lang: lang
+    },
+    function (response) { 
+        if (response['status']=='success') {
+            // analysis successful
+            update_translations_table(response['response']);
+        } else if (response['status']=='error') {
+            // analysis failed
+            report_analysis_failed(response['textStatus'],response['errorText']);
+        }
+    });
+}
 
 export { update_settings, initialize_aleksi, bindHandlers, show_dialog, update_translations_table };

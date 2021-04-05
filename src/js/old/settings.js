@@ -1,4 +1,4 @@
-var settings = {
+var defaultSettings = {
   'analyse_url': "http://www.aleksi.org/analyse/{word}.json",
   'loading_spinner_url': 'http://www.aleksi.org/img/loading_spinner.gif',
   'implicitGrantUrl': "https://accounts.google.com/o/oauth2/auth",
@@ -44,4 +44,4 @@ module.exports = {
 };
 */
 
-export { settings, get_setting };
+export { defaultSettings, get_setting };

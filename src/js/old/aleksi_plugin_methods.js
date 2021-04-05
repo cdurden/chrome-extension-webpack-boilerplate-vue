@@ -1,8 +1,10 @@
+//import { show_dialog } from './aleksi.js';
 import { get_setting } from './settings.js';
 import { jquery_aleksi } from './setup.js'; // TODO: refactor so that this does not need to be imported here
 
 
 // AJAX-calling functions
+/* Moved to aleksi.js
 async function analyse(word, e){
     var lang = await get_setting('lang');
     //set interface elements to report initiation of analysis
@@ -27,6 +29,7 @@ async function analyse(word, e){
         }
     });
 }
+*/
 
 function get_pins (on_success)
 {

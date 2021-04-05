@@ -20,11 +20,12 @@ if (fileSystem.existsSync(secretsPath)) {
 }
 
 var options = {
+  watch: true,
   entry: {
     popup: path.join(__dirname, "src", "js", "popup.js"),
     options: path.join(__dirname, "src", "js", "options.js"),
     background: path.join(__dirname, "src", "js", "old", "background.js"),
-    main: [
+    'content-script': [
 //        'jquery.js',
         'settings.js',
         'setup.js',
@@ -35,9 +36,11 @@ var options = {
         'content_listener.js'
     ].map( filename => { return path.join(__dirname, "src", "js", "old", filename ); } ),
   },
+    /*
   chromeExtensionBoilerplate: {
-    notHotReload: ["background", "main"]
+    notHotReload: ["background", "content-script"]
   },
+  */
   output: {
     path: path.join(__dirname, "build"),
     filename: "[name].bundle.js"
@@ -87,8 +90,14 @@ var options = {
   },
   plugins: [
     // clean the build folder
-    //new CleanWebpackPlugin(["build"]),
-    new ExtensionReloader(),
+    new CleanWebpackPlugin(["build"]),
+    new ExtensionReloader({
+      entries: { // The entries used for the content/background scripts or extension pages
+        contentScript: 'content-script',
+        background: 'background',
+        extensionPage: 'popup',
+      }
+    }),
     new webpack.ProvidePlugin({
         $: 'jquery',
         jQuery: 'jquery',
@@ -107,10 +116,10 @@ var options = {
           ...JSON.parse(content.toString())
         }))
       }
+    },
+    { 
+      from: 'src/img'
     }]),
-    new CopyWebpackPlugin([
-      { from: 'src/img' }
-    ]),
     new HtmlWebpackPlugin({
       template: path.join(__dirname, "src", "popup.html"),
       filename: "popup.html",
